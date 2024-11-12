@@ -11,15 +11,14 @@ struct ContentView: View {
     var body: some View {
         VStack {
             //Remove Image
-            Text("Hello, world!")
-            Text("Xaxa")
-            Text("Xexe-Xaxa")
-            Text("Code3")
-            
-            Text("NewTest")
-            
-            Text("New Main")
-            
+            VStack{
+                Text("Hello, world!")
+                Text("Xaxa")
+                Text("Xexe-Xaxa")
+                Text("Code3")
+                Text("NewTest")
+                Text("New Main")
+            }
         }
         .padding()
     }
