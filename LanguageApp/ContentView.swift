@@ -16,6 +16,8 @@ struct ContentView: View {
             Text("Xexe-Xaxa")
             Text("Code3")
             
+            Text("NewTest")
+            
         }
         .padding()
     }
