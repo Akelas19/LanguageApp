@@ -12,7 +12,8 @@ struct ContentView: View {
         VStack {
             //Remove Image
             Text("Hello, world!")
-            //TextField
+            Text("Xexe-Xaxa")
+            
         }
         .padding()
     }
