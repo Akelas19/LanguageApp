@@ -13,6 +13,7 @@ struct ContentView: View {
             //Remove Image
             Text("Hello, world!")
             Text("Xexe-Xaxa")
+            Text("Code3")
             
         }
         .padding()
