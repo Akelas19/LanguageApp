@@ -12,6 +12,7 @@ struct ContentView: View {
         VStack {
             //Remove Image
             Text("Hello, world!")
+            Text("Xaxa")
             Text("Xexe-Xaxa")
             Text("Code3")
             
