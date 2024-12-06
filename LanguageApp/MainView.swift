@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct MainView: View {
-    @ObservedObject private var viewModel = WordsViewModel()
-    
-    var word = Word(source: "Ноутбук", target: "Laptop", tag: "Device")
+    @ObservedObject private var wordsViewModel = WordsViewModel()
+    var word = Word(source: "Ноутбук", target: "Laptop", tag: WordTag.furniture)
     var body: some View {
         NavigationStack{
             HStack(
@@ -18,7 +17,7 @@ struct MainView: View {
                 spacing: 30
             ) {
                 NavigationLink(
-                    destination: CardsView(viewModel: viewModel),
+                    destination: CardsView(viewModel: wordsViewModel),
                     label: {
                         Text("1")
                             .foregroundStyle(.white)
@@ -54,7 +53,7 @@ struct MainView: View {
                     }
                 )
                 NavigationLink(
-                    destination: SettingsView(),
+                    destination: SettingsView(viewModel: wordsViewModel),
                     label: {
                         Text("Настройки")
                             .foregroundStyle(.white)
@@ -67,12 +66,7 @@ struct MainView: View {
                 )
             }
             .navigationTitle("Главный экран")
-
-//            .frame(width: 500, height: 40)
-//            .background(Color(red:0.1, green: 0.1, blue: 0.1))
             Spacer()
-            Text("CardView(word: word)")
-
         }
     }
 }
@@ -80,78 +74,83 @@ struct MainView: View {
 struct CardsView: View {
     @ObservedObject var viewModel: WordsViewModel
     
-//    var body: some View{
-//        HStack{
-//            
-//            Button{
-//                
-//            } label: {
-//                ZStack{
-//                    RoundedRectangle(cornerRadius: 20)
-//                        .frame(width: 150, height: 150)
-//                        .foregroundStyle(.mint)
-//                    Text("Xexe")
-//                        .font(.title)
-//                }
-//            }
-//            Button{
-//                
-//            } label: {
-//                ZStack{
-//                    RoundedRectangle(cornerRadius: 20)
-//                        .frame(width: 150, height: 150)
-//                        .foregroundStyle(.mint)
-//                    Text("Xexe")
-//                        .font(.title)
-//                }
-//            }
-//            
-//        }
-//    }
-
+    //    var body: some View{
+    //        HStack{
+    //
+    //            Button{
+    //
+    //            } label: {
+    //                ZStack{
+    //                    RoundedRectangle(cornerRadius: 20)
+    //                        .frame(width: 150, height: 150)
+    //                        .foregroundStyle(.mint)
+    //                    Text("Xexe")
+    //                        .font(.title)
+    //                }
+    //            }
+    //            Button{
+    //
+    //            } label: {
+    //                ZStack{
+    //                    RoundedRectangle(cornerRadius: 20)
+    //                        .frame(width: 150, height: 150)
+    //                        .foregroundStyle(.mint)
+    //                    Text("Xexe")
+    //                        .font(.title)
+    //                }
+    //            }
+    //
+    //        }
+    //    }
+    
     var body: some View {
         GeometryReader { geometry in
             HStack {
                 VStack {
-                    ForEach(viewModel.sourceWords) { word in
-                        CardView(word: $viewModel.words[viewModel.words.firstIndex(where: { $0.id == word.id })!], text: word.source, viewmodel: viewModel)
+                    ForEach($viewModel.sourceWords) { $word in
+                        CardView(word: $word, isItSource: true) {selectedWord in viewModel.selecetWord(word: selectedWord, isSource: true)}
                     }}
-                    VStack {
-                        ForEach(viewModel.targetWords) { word in
-                            CardView(word: $viewModel.words[viewModel.words.firstIndex(where: { $0.id == word.id })!], text: word.target, viewmodel: viewModel)
-                        }
+                VStack {
+                    ForEach($viewModel.targetWords) { $word in
+                        CardView(word: $word) {selectedWord in viewModel.selecetWord(word: selectedWord, isSource: false)}
                     }
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height * 0.7)
-                .position(x: geometry.size.width / 2, y: geometry.size.height / 2) // Разместим по центру экрана
             }
+            //Размещение по центру экрана
+            .frame(width: geometry.size.width, height: geometry.size.height * 0.7)
+            .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
         }
+    }
     
 }
 
 struct CardView: View {
-    @Binding var word: Word // Используем @Binding для того, чтобы изменять данные
-    var text: String = "Word"
-    @ObservedObject var viewmodel: WordsViewModel
+    @Binding var word: Word
+    var isItSource: Bool = false
+    @State var isSelected: Bool = false
+    var onCardSelected: (Word) -> Void
     
     var body: some View {
         GeometryReader { geometry in
             Button {
-                print("Card \(text)")
-                print(viewmodel.sourceWords[0].isMatched)
-                viewmodel.toggleWord()
-                print(viewmodel.sourceWords[0].isMatched)
+                print("\nCard \(word.source)")
+                print(word.isMatched)
+                word.toggleMatch()
+                print(word.isMatched)
+                isSelected.toggle()
+                onCardSelected(word)
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 25)
+                        .fill(isSelected ? .cyan : .clear)
                         .stroke(Color.black, lineWidth: 5)
-                    Text(word.isMatched ? "Matched" : text) // Показываем статус
+                    Text(isItSource ? word.source : word.target)
                         .font(.title2)
                         .foregroundStyle(.black)
                         .padding(10)
                 }
                 .padding(5)
-                .frame(width: geometry.size.width * 0.9, height: geometry.size.height) // Заданный размер кнопки
+                .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 1) // Заданный размер кнопки
                 .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
             }
         }
@@ -159,49 +158,130 @@ struct CardView: View {
 }
 
 struct SettingsView: View {
+    @ObservedObject var viewModel : WordsViewModel
+    @State private var isAddSheetPresented = false
+    @State private var isSettingsWordsPresented = false
+
+    
     var body: some View {
-        Button{} label: {
-        Text("Добавить слова")
-            .foregroundStyle(.white)
-            .font(.largeTitle)
-        .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 25)
-                    .fill(.blue)
-            )
-    }
+        Button{
+            isAddSheetPresented.toggle()
+        } label: {
+            Text("Добавить слово")
+                .foregroundStyle(.white)
+                .font(.largeTitle)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 25)
+                        .fill(.blue)
+                )
+        }
+        .sheet(isPresented: $isAddSheetPresented) {
+            AddWordsView(viewModel: viewModel)
+                }
+        
         Button{} label: {
             Text("Поменять тему")
                 .foregroundStyle(.white)
                 .font(.largeTitle)
-            .padding()
+                .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 25)
                         .fill(.blue)
                 )
         }
-        Button{} label: {
+        Button{
+            isSettingsWordsPresented.toggle()
+        } label: {
             Text("Настроить слова")
                 .foregroundStyle(.white)
                 .font(.largeTitle)
-            .padding()
+                .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 25)
                         .fill(.blue)
                 )
+        }
+        .sheet(isPresented: $isSettingsWordsPresented) { SettingsWords(viewModel: viewModel)
         }
     }
 }
 
-//        Circle()
-//            .fill(Color.blue)
-//            .frame(width: 200, height: 200)
-//            .mask(
-//                Rectangle()
-//                    .frame(width: 200, height: 100)
-//                    .offset(y: -50) // Сдвиг маски для верхней половины
-//            )
+struct AddWordsView: View {
+    @ObservedObject var viewModel : WordsViewModel
 
+    @State private var source = ""
+    @State private var target = ""
+    
+    @State private var selectedTag: WordTag = .furniture
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Добавить слово")
+                .font(.title)
+                .padding()
+
+            TextField("Введите исходное слово", text: $source)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            TextField("Введите перевод слова", text: $target)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+            
+            Picker("Select a Tag", selection: $selectedTag) {
+                ForEach(WordTag.allCases) { tag in
+                    Text(tag.displayName).tag(tag)
+                }
+            }
+            .padding()
+            
+            Button{
+                let newWord = Word(source: source, target: target, tag: WordTag.object)
+                viewModel.addWord(word: newWord)
+                clearFields()
+            } label: {
+                Text("Добавить слово")
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+            }
+            //Блокировка кнопки если поля пустые
+            .disabled(source.isEmpty || target.isEmpty)
+            .padding()
+        }
+        .padding()
+    }
+
+    private func clearFields() {
+        source = ""
+        target = ""
+    }
+}
+
+struct SettingsWords: View {
+    @ObservedObject var viewModel : WordsViewModel
+    
+    var body: some View {
+        Text("SettingsWords")
+        List {
+            ForEach(viewModel.words) { fruit in
+                HStack{
+                    Text(fruit.source)
+                    Spacer()
+                    Text(fruit.target)
+                }
+            }
+            .onDelete(perform: delete)
+        }
+    }
+    
+    func delete(at offsets: IndexSet) {
+        viewModel.words.remove(atOffsets: offsets)
+    }
+}
 
 struct ButtonFormat: ViewModifier {
     func body(content: Content) -> some View {
@@ -221,8 +301,15 @@ extension View {
 
 
 #Preview {
-//    MainView()
-    CardsView(viewModel: WordsViewModel())
+    MainView()
+//        CardsView(viewModel: WordsViewModel())
 }
 
-
+//        Circle()
+//            .fill(Color.blue)
+//            .frame(width: 200, height: 200)
+//            .mask(
+//                Rectangle()
+//                    .frame(width: 200, height: 100)
+//                    .offset(y: -50) // Сдвиг маски для верхней половины
+//            )

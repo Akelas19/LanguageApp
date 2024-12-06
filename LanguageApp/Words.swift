@@ -14,35 +14,64 @@ struct Word: Identifiable {
     
     private(set) var source: String
     private(set) var target: String
-    private var tag: Tag
-    var isMatched: Bool = false
+    private var tag: WordTag
+    private(set) var isMatched: Bool = false
     
     mutating func toggleMatch() {
         self.isMatched.toggle()
     }
     
-    init(source: String, target: String, isMatched: Bool, tag: String) {
+    init(source: String, target: String, isMatched: Bool, tag: WordTag) {
         self.id = UUID()
         self.source = source
         self.target = target
         self.isMatched = isMatched
-        self.tag = Tag.object(data: tag)
+        self.tag = tag
         
     }
     
-    init(source: String, target: String, tag: String) {
+    init(source: String, target: String, tag: WordTag) {
         self.id = UUID()
         self.source = source
         self.target = target
         self.isMatched = false
-        self.tag = Tag.object(data: tag)
+        self.tag = tag
         
     }
     
 }
 
-enum Tag {
-    case furniture
-    case object(data: String)
-    case animal
+enum WordTag: String, Hashable, CaseIterable, Identifiable {
+    var id: String {self.rawValue}
+    
+//    case furniture(data: String)
+    case furniture = "Furniture"
+    case animal = "Animal"
+    case object = "Object"
+    case fruit = "Fruit"
+    
+//    case object(data: String)
+//    case animal(data: String)
+    
+    var displayName: String {
+            switch self {
+            case .furniture: return "Furniture"
+            case .object: return "Object"
+            case .animal: return "Animal"
+            case .fruit: return "Fruit"
+            }
+        }
+    
+    func hash(into hasher: inout Hasher) {
+            switch self {
+            case .furniture:
+                hasher.combine("furniture")
+            case .animal:
+                hasher.combine("animal")
+            case .object:
+                hasher.combine("object")
+            case .fruit:
+                hasher.combine("fruit")
+            }
+        }
 }
