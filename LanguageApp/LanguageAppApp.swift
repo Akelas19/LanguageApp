@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct LanguageAppApp: App {
+    //PersistenceController для работы с Core Data
+    private var persistenceController = PersistenceController.shared
+
     var body: some Scene {
         WindowGroup {
             MainView()
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
+

@@ -6,8 +6,18 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F0C97F062D0CC2EE00EAC723 /* LanguageAppModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F0C97F052D0CC2ED00EAC723 /* LanguageAppModel.xcdatamodeld */; };
+		F0C97F0A2D0CC45500EAC723 /* Word+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C97F082D0CC45500EAC723 /* Word+CoreDataClass.swift */; };
+		F0C97F0B2D0CC45500EAC723 /* Word+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C97F092D0CC45500EAC723 /* Word+CoreDataProperties.swift */; };
+		F0C97F0F2D0CCF1700EAC723 /* LanguageAppModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = F0C97F0E2D0CCF1700EAC723 /* LanguageAppModel.xcdatamodel */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		F050FECB2CE37A0B0049B5A2 /* LanguageApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LanguageApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0C97F082D0CC45500EAC723 /* Word+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Word+CoreDataClass.swift"; sourceTree = "<group>"; };
+		F0C97F092D0CC45500EAC723 /* Word+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Word+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F0C97F0E2D0CCF1700EAC723 /* LanguageAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LanguageAppModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +42,9 @@
 		F050FEC22CE37A0B0049B5A2 = {
 			isa = PBXGroup;
 			children = (
+				F0C97F082D0CC45500EAC723 /* Word+CoreDataClass.swift */,
+				F0C97F092D0CC45500EAC723 /* Word+CoreDataProperties.swift */,
+				F0C97F052D0CC2ED00EAC723 /* LanguageAppModel.xcdatamodeld */,
 				F050FECD2CE37A0B0049B5A2 /* LanguageApp */,
 				F050FECC2CE37A0B0049B5A2 /* Products */,
 			);
@@ -119,6 +132,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0C97F0A2D0CC45500EAC723 /* Word+CoreDataClass.swift in Sources */,
+				F0C97F0B2D0CC45500EAC723 /* Word+CoreDataProperties.swift in Sources */,
+				F0C97F062D0CC2EE00EAC723 /* LanguageAppModel.xcdatamodeld in Sources */,
+				F0C97F0F2D0CCF1700EAC723 /* LanguageAppModel.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +341,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		F0C97F052D0CC2ED00EAC723 /* LanguageAppModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F0C97F0E2D0CCF1700EAC723 /* LanguageAppModel.xcdatamodel */,
+			);
+			currentVersion = F0C97F0E2D0CCF1700EAC723 /* LanguageAppModel.xcdatamodel */;
+			path = LanguageAppModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F050FEC32CE37A0B0049B5A2 /* Project object */;
 }
